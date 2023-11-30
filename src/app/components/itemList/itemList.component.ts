@@ -28,7 +28,6 @@ export class ItemList implements OnInit {
   selectedIds: number[] = [];
 
   treeControl = new NestedTreeControl<Item>(node => node.children);
-  dataSource = new MatTreeNestedDataSource<Item>();
 
   constructor(
     private apiService: ApiService) {}
@@ -42,6 +41,7 @@ export class ItemList implements OnInit {
     .subscribe({
       next: (response: Response) => {
         this.folders = generateTree(response);
+        this.expandAll(this.folders);
       },
       error: (error: Error) => console.error('Error fetching json:', error)
     });
@@ -51,7 +51,7 @@ export class ItemList implements OnInit {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
+  
   hasChild = (_: number, node: Item) => node.expandable;
 
   getSelectedIds = () => {
@@ -67,5 +67,14 @@ export class ItemList implements OnInit {
   clearSelection = () => {
     this.folders.forEach(item => selectInTree(item, item.uiId, false));
     this.getSelectedIds();
+  }
+
+  expandAll = (items: Item[]) => {
+    items.forEach((item: Item) => {
+      if (item.children) {
+        this.treeControl.expand(item);
+        this.expandAll(item.children);
+      }
+    })
   }
 }

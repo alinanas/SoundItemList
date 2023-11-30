@@ -1,5 +1,5 @@
 <mat-card class="list-card">
-  <mat-tree [dataSource]="folders | filterFolders: null" [treeControl]="treeControl" class="list-tree">
+  <mat-tree #tree [dataSource]="folders | filterFolders: null" [treeControl]="treeControl" class="list-tree">
     <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
         {{node.name}} 
         <input type="checkbox" (click)="selectItem(node.uiId, !node.checked)" [checked]="node.checked"/>
